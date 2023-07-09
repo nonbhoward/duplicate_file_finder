@@ -19,7 +19,7 @@ settings = {
     'debug': True,
     'delete_copied_files': False,
     'extensions': [
-        'ini',
+        'iso',
     ],
     'file_source': [
         f'{home_drive}',

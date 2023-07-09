@@ -61,21 +61,25 @@ def move_files_to_destination(found_files: dict, settings: dict):
     debug = settings['debug']
     file_destination = build_path_using_(settings['file_destination'])
     # Move unique files to destination
-    for unique_file in found_files['unique_files']:
+    for file_hash, file_details in found_files['unique_files'].items():
+        path_to_file = file_details['path_to_file']
+        print(f'Move/Copy file :')
+        print(f'\tFrom : {path_to_file}')
+        print(f'\tTo : {file_destination}')
         try:
             if debug:
                 shutil.copy(
-                    src=unique_file,
+                    src=path_to_file,
                     dst=file_destination
                 )
                 continue
             shutil.move(
-                src=unique_file,
+                src=path_to_file,
                 dst=file_destination
             )
         except Exception as exc:
             print(f'{exc}')
-            print(f'Unable to copy/move file : {unique_file}')
+            print(f'Unable to copy/move file : {path_to_file}')
 
     # Move duplicate files to duplicate destination
     # Create the duplicate destination
@@ -89,21 +93,24 @@ def move_files_to_destination(found_files: dict, settings: dict):
 
     # Move the duplicate files, appending a GUID to the filename to
     #   avoid overwrites
-    for index, duplicate_file in enumerate(found_files['duplicate_files']):
-        duplicate_filename_w_guid = append_guid_to_(duplicate_file, index)
+    for index, path_to_duplicate_file in enumerate(found_files['duplicate_files']):
+        duplicate_filename_w_guid = append_guid_to_(path_to_duplicate_file, index)
         duplicate_destination_with_filename_appended = \
             str(Path(duplicate_destination, duplicate_filename_w_guid))
+        print(f'Move/Copy file :')
+        print(f'\tFrom : {path_to_duplicate_file}')
+        print(f'\tTo : {file_destination}')
         try:
             if debug:
                 shutil.copy(
-                    src=duplicate_file,
+                    src=path_to_duplicate_file,
                     dst=duplicate_destination_with_filename_appended
                 )
                 continue
             shutil.move(
-                src=duplicate_file,
+                src=path_to_duplicate_file,
                 dst=duplicate_destination_with_filename_appended
             )
         except Exception as exc:
             print(f'{exc}')
-            print(f'Unable to copy/move file : {unique_file}')
+            print(f'Unable to copy/move file : {path_to_duplicate_file}')

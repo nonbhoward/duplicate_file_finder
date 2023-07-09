@@ -19,6 +19,7 @@ def this_is_a_file_we_care_about(path_to_file: str, settings: dict) -> bool:
         return False  # We don't care about files without extensions
     if file_ext not in extensions:
         return False  # We don't care about extensions not listed in our search
+    print(f'\tFound a matching file : {path_to_file}')
     return True
 
 
@@ -26,7 +27,7 @@ def this_is_a_file_we_care_about(path_to_file: str, settings: dict) -> bool:
 def append_guid_to_(filename, index) -> str:
     filename_elements = filename.split('\\')
     fn_w_guid = filename_elements[-1].split('.')
-    filename_with_guid = fn_w_guid[0] + str(index) + '.' + fn_w_guid[1]
+    filename_with_guid = fn_w_guid[0] + str(index) + '.' + fn_w_guid[-1]
     return filename_with_guid
 
 
@@ -53,6 +54,7 @@ def extract_metadata_from_(found_file: str) -> dict:
 def generate_hash_for_(file, settings):
     BUF_SIZE = settings['BUF_SIZE']
     f_md5 = md5()
+    print(f'\tGenerating hash for : {file}')
     with open(file, 'rb') as f_rb:
         while True:
             f_data = f_rb.read(BUF_SIZE)
@@ -60,7 +62,7 @@ def generate_hash_for_(file, settings):
                 break
             f_md5.update(f_data)
     f_hash = f_md5.hexdigest()
-    return
+    return f_hash
 
 
 def get_extension(path_to_file: str) -> str:
@@ -72,34 +74,35 @@ def get_extension(path_to_file: str) -> str:
 
 
 def identify_duplicate_files(found_files_with_metadata_sorted, settings):
+    print('Identifying duplicate files')
     # Look for multiple entries with the same size
-    unique_file_sizes = {}
-    found_files_with_duplicates = {
-        'unique_files': [],
+    unique_file_hashes = {}
+    unique_files_and_duplicate_files = {
+        'unique_files': {},
         'duplicate_files': {}
     }
     for file, file_details in found_files_with_metadata_sorted.items():
-        file_size = file_details['size']
-        # Use the file size as a quick filter to identify unique files
-        if file_size not in unique_file_sizes:
-            unique_file_sizes.update({file_size: file})
-            found_files_with_duplicates['unique_files'].append(file)
-            continue
+        file_hash = generate_hash_for_(file, settings)
+        if file_hash not in unique_file_hashes:
+            unique_file_hashes.update({file_hash: file})
+            unique_files_and_duplicate_files['unique_files'].update({
+                file_hash: {
+                    'path_to_file': file,
+                    'file_hash': file_hash
+                }
+            })
+            continue  # Unique file found
+
+        # Duplicate file found, process it and store its parent
         file_name = file.split('\\')[-1].split('.')[0]
-
-        # If the file sizes are the same, compare the file hashes
-        # At this point, I know that this file size has been seen before
-        # Generate a hash against the file contents
-
-        # f_hash = generate_hash_for_(file, settings)
-
-        print(f'Duplicate file size found for file : {file_name}')
-        found_files_with_duplicates['duplicate_files'].update({
+        print(f'\tDuplicate file hash found for file : {file_name}')
+        unique_files_and_duplicate_files['duplicate_files'].update({
             file: {
-                'path_to_parent_duplicate': unique_file_sizes[file_size]
+                'path_to_parent_duplicate':
+                    unique_file_hashes[file_hash]
             }
         })
-    return found_files_with_duplicates
+    return unique_files_and_duplicate_files
 
 
 def populate_metadata_of_(found_files: list) -> dict:
