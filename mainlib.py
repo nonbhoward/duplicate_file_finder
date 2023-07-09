@@ -59,9 +59,12 @@ def find_files_with_extension_(settings: dict):
 
 def move_files_to_destination(found_files: dict, settings: dict):
     debug = settings['debug']
+    only_copy_duplicates = settings['only_copy_duplicates']
     file_destination = build_path_using_(settings['file_destination'])
     # Move unique files to destination
     for file_hash, file_details in found_files['unique_files'].items():
+        if only_copy_duplicates:
+            continue  # Skip copying unique files
         path_to_file = file_details['path_to_file']
         print(f'Move/Copy file :')
         print(f'\tFrom : {path_to_file}')

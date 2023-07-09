@@ -19,6 +19,7 @@ if not home_drive:
 #       build the source search directory
 #   file_destination: a list of elements that will be combined to
 #       build the destination directory
+#   only_move_duplicates: only copy duplicates that are found
 settings = {
     'BUF_SIZE': 65536,
     'debug': True,
@@ -33,7 +34,8 @@ settings = {
     'file_destination': [
         f'{home_drive}',
         'path_to_testing_destination',
-    ]
+    ],
+    'only_move_duplicates': False
 }
 
 # Verify required folders exist
