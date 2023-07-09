@@ -19,7 +19,7 @@ if not home_drive:
 #       build the source search directory
 #   file_destination: a list of elements that will be combined to
 #       build the destination directory
-#   only_move_duplicates: only copy duplicates that are found
+#   only_copy_duplicates: only copy duplicates that are found
 settings = {
     'BUF_SIZE': 65536,
     'debug': True,
@@ -35,7 +35,7 @@ settings = {
         f'{home_drive}',
         'path_to_testing_destination',
     ],
-    'only_move_duplicates': False
+    'only_copy_duplicates': False
 }
 
 # Verify required folders exist
@@ -45,5 +45,7 @@ path_to_source = str(Path('\\'.join(file_source_elements)))
 path_to_destination = str(Path('\\'.join(file_destination_elements)))
 if not exists(path_to_source):
     print(f'Path does not exist : {path_to_source}')
+    exit()
 if not exists(path_to_destination):
     print(f'Path does not exist : {path_to_destination}')
+    exit()
