@@ -9,6 +9,8 @@ from os.path import exists
 # Top-level functions
 def this_is_a_file_we_care_about(path_to_file: str, settings: dict) -> bool:
     extensions = settings['extensions']
+    if not extensions:
+        return True  # No extensions listed, care about all files
     path_to_destination = build_path_using_(settings['file_destination'])
     path_to_file_parent_dir = build_path_using_(path_to_file.split('\\')[:-1])
     if path_to_destination == path_to_file_parent_dir:
