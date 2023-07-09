@@ -1,3 +1,5 @@
+# Project settings
+
 # imports, python
 from os import environ
 
@@ -17,7 +19,6 @@ if not home_drive:
 settings = {
     'BUF_SIZE': 65536,
     'debug': True,
-    'delete_copied_files': False,
     'extensions': [
         'iso',
     ],

@@ -1,4 +1,4 @@
-# Top-level functions from main
+# Functions directly called in main
 
 # imports, python
 from os import mkdir

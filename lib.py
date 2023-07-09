@@ -12,9 +12,8 @@ def this_is_a_file_we_care_about(path_to_file: str, settings: dict) -> bool:
     path_to_destination = build_path_using_(settings['file_destination'])
     path_to_file_parent_dir = build_path_using_(path_to_file.split('\\')[:-1])
     if path_to_destination == path_to_file_parent_dir:
-        return False
+        return False  # We don't care about files in the destination
     file_ext = get_extension(path_to_file)
-    # Do not search in the path that is defined as a destination path
     if not file_ext:
         return False  # We don't care about files without extensions
     if file_ext not in extensions:

@@ -1,3 +1,5 @@
+# The python entry point
+
 # imports, project
 from mainlib import *
 from settings import settings
